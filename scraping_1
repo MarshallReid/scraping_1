@@ -1,0 +1,51 @@
+# Imports urllib2, which is a python module used for fetching urls
+import urllib2, csv
+
+# It is pulled from BeautifulSoup, a python library
+from bs4 import BeautifulSoup
+
+# Creates a file, linking it to the computer's file system
+# Opens the .csv file for jaildata. 'W' signifies we will wrtie in it
+outfile = open('jaildata.csv', 'w')
+
+# defines 'writer' as a variable attached to writing the new .csv file we # defined in the above line of code. It is itself attached to the 
+# variable 'outfile'
+writer = csv.writer(outfile)
+
+# Defines the variable 'url' as the website we will be scraping
+url = 'https://report.boonecountymo.org/mrcjava/servlet/SH01_MP.I00290s?max_rows=500'
+
+# Defines the variable 'html' as a line of code designed to use the 
+# urllib2 function from earlier and then open up the variable just 
+# defined as 'url'.
+html = urllib2.urlopen(url).read()
+
+# 'soup' is now a variable for the following code. 
+# "html.parser" is another python function. It is used to parse out HTML # code
+soup = BeautifulSoup(html, "html.parser")
+
+# tbody stands for table_body. It is made a variable for the utilization
+# of the BeautifulSoup function to find several aspects of the webpage
+tbody = soup.find('tbody', {'class': 'stripe'})
+
+# Rows is defined as the table_body attached to a function to find all
+# rows inside the html code for the table_body
+rows = tbody.find_all('tr')
+
+# The following 'for' function will affect each row of data
+for row in rows:
+
+# Cells is defined as a command to find all cells in 'rows' variable
+    cells = row.find_all('td')
+
+# The variable data is left empty as a placeholder
+    data = []
+
+# This internal 'for' statement will append the data variable with 
+# information as it is found
+    for cell in cells:
+        data.append(cell.text)
+
+# This seems like it will write row data into a table for the data
+# variable from earlier.
+    writer.writerow(data)
